@@ -9,9 +9,10 @@ class Settings:
 
         ''' Ship Settings '''
         self.ship_speed = 1.5
+        self.ship_limit = 3
 
         ''' Bullet Settings '''
-        self.bullet_speed = 1.0
+        self.bullet_speed = 1.5
         self.bullet_width = 3
         self.bullet_height = 15
         self.bullet_color = (83,192,255)
@@ -21,7 +22,7 @@ class Settings:
         self.NUMBER_STARS = 200
 
         ''' Alien Settings '''
-        self.alien_speed = 1.0
+        self.alien_speed = .75
         self.fleet_drop_speed = 10
         ## fleet direction of 1 = rigth, -1 = left
         self.fleet_direction = 1
