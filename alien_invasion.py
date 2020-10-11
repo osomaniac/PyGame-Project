@@ -30,6 +30,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self._update_bullets()
+            self._update_aliens()
             self._update_screen()
 
     def _check_events(self):
@@ -75,16 +76,11 @@ class AlienInvasion:
                 self.bullets.remove(bullet)
 
     def _create_sky(self):
-        ## make a star
-        star = Star(self)
-        NUMBER_STARS = 200
-
-        for s in range(NUMBER_STARS):
+        for s in range(self.settings.NUMBER_STARS):
             self._create_star()
 
     def _create_star(self):
         star = Star(self)
-        star_width, star_height = star.rect.size
         x_loc = r(0,self.settings.screen_width)
         y_loc = r(0, self.settings.screen_height)
         star.rect.x = x_loc
@@ -118,6 +114,21 @@ class AlienInvasion:
         alien.rect.x = alien.x
         alien.rect.y = alien.rect.height + 2*alien.rect.height*row_number
         self.aliens.add(alien)
+    
+    def _update_aliens(self):
+        self._check_fleet_edges()
+        self.aliens.update()
+
+    def _check_fleet_edges(self):
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+
+    def _change_fleet_direction(self):
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
 
     def _update_screen(self):
         ## update images on the screen
