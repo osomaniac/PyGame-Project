@@ -1,9 +1,11 @@
 import sys 
 import pygame 
+from random import randint as r
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from star import Star
 
 class AlienInvasion:
     def __init__(self):
@@ -12,12 +14,15 @@ class AlienInvasion:
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Alien Invasion")
- 
+
+        self.stars = pygame.sprite.Group()
+        self._create_sky()
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
+        
 
-        self._creat_fleet()
+        self._create_fleet()
 
     def run_game(self):
         ## main loop for game
@@ -69,7 +74,24 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
 
-    def _creat_fleet(self):
+    def _create_sky(self):
+        ## make a star
+        star = Star(self)
+        NUMBER_STARS = 200
+
+        for s in range(NUMBER_STARS):
+            self._create_star()
+
+    def _create_star(self):
+        star = Star(self)
+        star_width, star_height = star.rect.size
+        x_loc = r(0,self.settings.screen_width)
+        y_loc = r(0, self.settings.screen_height)
+        star.rect.x = x_loc
+        star.rect.y = y_loc
+        self.stars.add(star)
+
+    def _create_fleet(self):
         ## make an alien
         alien = Alien(self)
 
@@ -83,7 +105,6 @@ class AlienInvasion:
         available_space_y = (self.settings.screen_height -
                                 (3*alien_height) - ship_height)
         number_rows = available_space_y // (2*alien_height)
-        print(number_rows)
 
         ## create full fleet of aliens
         for row_number in range(number_rows):
@@ -102,6 +123,7 @@ class AlienInvasion:
         ## update images on the screen
         ## redraw screen during each pass through loop
         self.screen.fill(self.settings.bg_color)
+        self.stars.draw(self.screen)
         self.ship.blitme()
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
